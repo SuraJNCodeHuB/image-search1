@@ -1,6 +1,4 @@
-const ACCESS_KEY = "";
-const SECRET_KEY = "";
-
+import { ACCESS_KEY } from './constants.js';
 
 const labels = ['Montréal', 'Canada', 'Collective', 'Table', 'Interior', 'Chair', 'Coffee Shop', 'Coffee Machine', 'Coffee', 'Cafe'];
 
@@ -27,6 +25,10 @@ document.querySelector('form').addEventListener('submit', async function(event) 
 });
 
 async function  searchImages(query) {
+    const now = new Date();
+    const expires =  now.setTime(now.getTime() + (24 * 60 * 60 * 1000));
+
+    document.cookie = `query=${query};expires=${new Date(expires)};path=/`;
     console.log({query});
     const url = `https://api.unsplash.com/search/photos?page=1&query=${query}&client_id=${ACCESS_KEY}`;
     console.log({url})
@@ -43,3 +45,11 @@ async function  searchImages(query) {
     }
     document.querySelector('.images').innerHTML = imageElements;
 }
+
+
+(async () => {
+    const cookie = document.cookie;
+    const query = cookie.split("=")[1];
+    console.log(query);
+    await searchImages(query);
+})()
